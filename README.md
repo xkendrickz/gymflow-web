@@ -1,48 +1,82 @@
-# gymflow-web
+# GymFlow Web
 
-This template should help get you started developing with Vue 3 in Vite.
+Frontend web application for the GymFlow Gym Management System, built with Vue.js 3 and Vuetify.
 
-## Recommended IDE Setup
+## Tech Stack
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Vue.js 3** — Progressive JavaScript framework
+- **TypeScript** — Type safety
+- **Vuetify 3** — Material Design component library
+- **Pinia** — State management
+- **Vue Router** — Client-side routing
+- **Axios** — HTTP client
+- **Vue Toastification** — Toast notifications
 
-## Recommended Browser Setup
+## User Roles
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+| Role | Access |
+|---|---|
+| **Admin** | Instructor management |
+| **Kasir** | Member management, activation, deposits, attendance |
+| **Manajer Operasional** | Schedules, leave requests, operational reports |
 
-## Type Support for `.vue` Imports in TS
+## Prerequisites
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- Node.js 18+
+- npm or yarn
+- [gymflow-api](https://github.com/xkendrickz/gymflow-api) running
 
-## Customize configuration
+## Getting Started
+```bash
+# Clone the repository
+git clone https://github.com/xkendrickz/gymflow-web.git
+cd gymflow-web
 
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
+# Install dependencies
 npm install
+
+# Create environment file
+cp .env.example .env
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
+Edit `.env`:
+```env
+VITE_API_BASE_URL=http://localhost:8000
+```
+```bash
+# Run development server
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+App runs at `http://localhost:5173`
 
-```sh
+## Project Structure
+```
+src/
+├── components/          # Reusable components
+│   ├── AdminDashboard.vue
+│   ├── KasirDashboard.vue
+│   ├── MODashboard.vue
+│   └── DashboardLayout.vue
+├── views/               # Page components
+│   ├── Admin/
+│   ├── Kasir/
+│   └── manajerOperasional/
+├── stores/              # Pinia stores
+│   └── auth.ts
+├── router/              # Vue Router config
+│   └── index.ts
+└── lib/
+    └── axios.ts         # Axios instance with interceptors
+```
+
+## Build for Production
+```bash
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## Related Repositories
 
-```sh
-npm run lint
-```
+- [gymflow-api](https://github.com/xkendrickz/gymflow-api) — Laravel REST API backend
+- [gymflow-mobile](https://github.com/xkendrickz/gymflow-android) — Kotlin Android app
+- [gymflow](https://github.com/xkendrickz/gymflow) — Project overview
