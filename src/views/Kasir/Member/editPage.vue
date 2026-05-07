@@ -95,7 +95,7 @@ const errors = reactive<Record<string, string[]>>({})
 
 onMounted(async () => {
     try {
-        const res = await api.get(`https://gymflow-api-production.up.railway.app/api/member/${id}`)
+        const res = await api.get(`/member/${id}`)
         const data = res.data.data
         form.nama_member = data.nama_member
         form.email = data.email
@@ -116,7 +116,7 @@ async function update() {
     Object.keys(errors).forEach(k => delete errors[k])
 
     try {
-        await api.put(`https://gymflow-api-production.up.railway.app/api/member/${id}`, form)
+        await api.put(`/member/${id}`, form)
         toast.success('Berhasil Edit Member!', { timeout: 2000 })
         router.push({ name: 'kasir.member.index' })
     } catch (error: any) {

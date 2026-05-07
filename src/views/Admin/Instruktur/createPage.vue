@@ -62,7 +62,7 @@ async function store() {
 	loading.value = true
 	Object.keys(errors).forEach(k => delete errors[k])
 	try {
-		await api.post('https://gymflow-api-production.up.railway.app/api/instruktur', form)
+		await api.post('/instruktur', form)
 		toast.success('Berhasil Tambah Instruktur!', { timeout: 2000 })
 		router.push({ name: 'admin.instruktur.index' })
 	} catch (e: any) {

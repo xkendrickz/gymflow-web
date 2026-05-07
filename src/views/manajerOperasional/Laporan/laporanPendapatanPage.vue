@@ -37,7 +37,7 @@ const form = reactive({ tahun: '' })
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/dropdownPendapatan')
+		const res = await api.get('/dropdownPendapatan')
 		dropdown.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 })
@@ -46,7 +46,7 @@ async function cetak() {
 	if (!form.tahun) { toast.error('Pilih tahun terlebih dahulu.', { timeout: 2000 }); return }
 	loading.value = true
 	try {
-		const res = await api.get(`https://gymflow-api-production.up.railway.app/api/laporanPendapatan/${form.tahun}`)
+		const res = await api.get(`/laporanPendapatan/${form.tahun}`)
 		const { data, total_tahunan, tahun, tanggal } = res.data
 		const popup = window.open('', '_blank')
 		if (!popup) return

@@ -93,7 +93,7 @@ const unconfirmed = computed(() => izin.value.filter(i => i.konfirmasi === 0))
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/izin')
+		const res = await api.get('/izin')
 		izin.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { loading.value = false }
@@ -102,7 +102,7 @@ onMounted(async () => {
 async function konfirmasi(id: number) {
 	processingId.value = id
 	try {
-		await api.put(`https://gymflow-api-production.up.railway.app/api/izin/${id}`)
+		await api.put(`/izin/${id}`)
 		const item = izin.value.find(i => i.id_izin === id)
 		if (item) item.konfirmasi = 1
 		toast.success('Izin berhasil dikonfirmasi!', { timeout: 2000 })

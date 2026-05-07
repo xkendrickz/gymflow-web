@@ -92,8 +92,8 @@ const loadingReset2 = ref(false)
 onMounted(async () => {
 	try {
 		const [r1, r2] = await Promise.all([
-			api.get('https://gymflow-api-production.up.railway.app/api/indexAktivasi'),
-			api.get('https://gymflow-api-production.up.railway.app/api/indexDeposit'),
+			api.get('/indexAktivasi'),
+			api.get('/indexDeposit'),
 		])
 		aktivasi.value = r1.data.data
 		deposit.value = r2.data.data
@@ -104,7 +104,7 @@ onMounted(async () => {
 async function resetMember() {
 	loadingReset2.value = true
 	try {
-		await api.post('https://gymflow-api-production.up.railway.app/api/resetMember')
+		await api.post('/resetMember')
 		toast.success('Berhasil Reset Status Member dan Sisa Deposit Paket!', { timeout: 2000 })
 	} catch { toast.error('Gagal reset member.', { timeout: 2000 }) }
 	finally { loadingReset2.value = false }
@@ -113,7 +113,7 @@ async function resetMember() {
 async function resetInstruktur() {
 	loadingReset1.value = true
 	try {
-		await api.post('https://gymflow-api-production.up.railway.app/api/resetInstruktur')
+		await api.post('/resetInstruktur')
 		toast.success('Berhasil Reset Waktu Terlambat Instruktur!', { timeout: 2000 })
 	} catch { toast.error('Gagal reset instruktur.', { timeout: 2000 }) }
 	finally { loadingReset1.value = false }

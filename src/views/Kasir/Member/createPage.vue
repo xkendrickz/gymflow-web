@@ -116,7 +116,7 @@ async function store() {
     Object.keys(errors).forEach(k => delete errors[k])
 
     try {
-        await api.post('https://gymflow-api-production.up.railway.app/api/member', form)
+        await api.post('/member', form)
         toast.success('Berhasil Register Member!', { timeout: 2000 })
         router.push({ name: 'kasir.member.index' })
     } catch (error: any) {

@@ -16,12 +16,11 @@ const pinia = createPinia()
 const app = createApp(App)
 
 app.use(vuetify)
-app.use(pinia) // ← pinia first
+app.use(pinia)
 app.use(Toast)
 
-// Restore session before router starts navigating
 const auth = useAuthStore()
-auth.init() // ← then init auth
+auth.init()
 
-app.use(router) // ← then router
+app.use(router)
 app.mount('#app')

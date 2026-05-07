@@ -125,7 +125,7 @@ const filtered = computed(() =>
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/member')
+		const res = await api.get('/member')
 		members.value = res.data.data
 	} catch {
 		toast.error('Gagal memuat data member.', { timeout: 2000 })
@@ -143,7 +143,7 @@ async function deleteMember() {
 	if (!toDelete.value) return
 	deleteLoading.value = true
 	try {
-		await api.delete(`https://gymflow-api-production.up.railway.app/api/member/${toDelete.value.id_member}`)
+		await api.delete(`/member/${toDelete.value.id_member}`)
 		members.value = members.value.filter(m => m.id_member !== toDelete.value.id_member)
 		toast.error('Berhasil Hapus Member!', { timeout: 2000 })
 		deleteDialog.value = false
@@ -156,7 +156,7 @@ async function deleteMember() {
 
 async function printCard(id: number) {
 	try {
-		const res = await api.get(`https://gymflow-api-production.up.railway.app/api/member/${id}`)
+		const res = await api.get(`/member/${id}`)
 		const m = res.data.data
 		const popup = window.open('', '_blank')
 		if (!popup) return

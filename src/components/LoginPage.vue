@@ -97,7 +97,7 @@ async function login() {
 	validation.value = {}
 
 	try {
-		const response = await api.post('https://gymflow-api-production.up.railway.app/api/loginWeb', {
+		const response = await api.post('/loginWeb', {
 			username: pegawai.username,
 			password: pegawai.password,
 		})

@@ -70,7 +70,7 @@ const processingId = ref<number | null>(null)
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/presensiKelas')
+		const res = await api.get('/presensiKelas')
 		bookings.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { loading.value = false }
@@ -79,7 +79,7 @@ onMounted(async () => {
 async function presensi(id: number) {
 	processingId.value = id
 	try {
-		const res = await api.get(`https://gymflow-api-production.up.railway.app/api/cetakStruk/${id}`)
+		const res = await api.get(`/cetakStruk/${id}`)
 		const data = res.data.data
 		printStruk(data)
 		const item = bookings.value.find(b => b.id_presensi_kelas === id)

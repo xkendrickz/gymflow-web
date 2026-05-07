@@ -44,7 +44,7 @@ const form = reactive({ bulan: '', tahun: '' })
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/dropdownAktivitasKelas')
+		const res = await api.get('/dropdownAktivitasKelas')
 		dropdown.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 })
@@ -53,7 +53,7 @@ async function cetak() {
 	if (!form.bulan || !form.tahun) { toast.error('Pilih bulan dan tahun.', { timeout: 2000 }); return }
 	loading.value = true
 	try {
-		const res = await api.get(`https://gymflow-api-production.up.railway.app/api/dropdownAktivitasKelas/${form.bulan}/${form.tahun}`)
+		const res = await api.get(`/dropdownAktivitasKelas/${form.bulan}/${form.tahun}`)
 		const { data, total, bulan, tahun, tanggal } = res.data
 		const popup = window.open('', '_blank')
 		if (!popup) return

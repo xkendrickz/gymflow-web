@@ -156,7 +156,7 @@ function formatDay(date: string) {
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/jadwalHarian')
+		const res = await api.get('/jadwalHarian')
 		jadwal.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { loading.value = false }
@@ -165,10 +165,10 @@ onMounted(async () => {
 async function generate() {
 	generating.value = true
 	try {
-		await api.post('https://gymflow-api-production.up.railway.app/api/jadwalHarian')
+		await api.post('/jadwalHarian')
 		localStorage.setItem('jadwalHarianLastAccess', new Date().toString())
 		generateDisabled.value = true
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/jadwalHarian')
+		const res = await api.get('/jadwalHarian')
 		jadwal.value = res.data.data
 		toast.success('Berhasil Generate Jadwal Harian!', { timeout: 2000 })
 	} catch { toast.error('Gagal generate jadwal.', { timeout: 2000 }) }

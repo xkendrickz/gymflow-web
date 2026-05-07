@@ -46,7 +46,7 @@ const errors = reactive<Record<string, string[]>>({})
 
 onMounted(async () => {
 	try {
-		const res = await api.get(`https://gymflow-api-production.up.railway.app/api/jadwalHarian/${id}`)
+		const res = await api.get(`/jadwalHarian/${id}`)
 		form.status = res.data.data[0]?.status ?? ''
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { fetchLoading.value = false }
@@ -56,7 +56,7 @@ async function update() {
 	loading.value = true
 	Object.keys(errors).forEach(k => delete errors[k])
 	try {
-		await api.put(`https://gymflow-api-production.up.railway.app/api/jadwalHarian/${id}`, form)
+		await api.put(`/jadwalHarian/${id}`, form)
 		toast.success('Berhasil Edit Jadwal!', { timeout: 2000 })
 		router.push({ name: 'mo.jadwalHarian.index' })
 	} catch (e: any) {

@@ -62,7 +62,7 @@ const errors = reactive<Record<string, string[]>>({})
 onMounted(async () => {
 	try {
 		const [r1, r2, r3] = await Promise.all([
-			api.get('https://gymflow-api-production.up.railway.app/api/member'), api.get('https://gymflow-api-production.up.railway.app/api/pegawai'), api.get('https://gymflow-api-production.up.railway.app/api/kelas')
+			api.get('/member'), api.get('/pegawai'), api.get('/kelas')
 		])
 		members.value = r1.data.data
 		pegawais.value = r2.data.data
@@ -74,9 +74,9 @@ async function store() {
 	loading.value = true
 	Object.keys(errors).forEach(k => delete errors[k])
 	try {
-		const res = await api.post('https://gymflow-api-production.up.railway.app/api/depositKelas', form)
+		const res = await api.post('/depositKelas', form)
 		const idDeposit = res.data.data.id_deposit_paket
-		const detail = await api.get(`https://gymflow-api-production.up.railway.app/api/depositKelas/${idDeposit}`)
+		const detail = await api.get(`/depositKelas/${idDeposit}`)
 		printStruk(detail.data.data)
 		toast.success('Berhasil Deposit Kelas!', { timeout: 2000 })
 		form.id_member = ''; form.id_pegawai = ''; form.id_kelas = ''; form.deposit = ''

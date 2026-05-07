@@ -83,7 +83,7 @@ function formatDay(date: string) {
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/jadwalUmum')
+		const res = await api.get('/jadwalUmum')
 		jadwal.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { loading.value = false }
@@ -95,7 +95,7 @@ async function deleteJadwal() {
 	if (!toDeleteId.value) return
 	deleteLoading.value = true
 	try {
-		await api.delete(`https://gymflow-api-production.up.railway.app/api/jadwalUmum/${toDeleteId.value}`)
+		await api.delete(`/jadwalUmum/${toDeleteId.value}`)
 		jadwal.value = jadwal.value.filter(j => j.id_jadwal_umum !== toDeleteId.value)
 		toast.success('Berhasil Hapus Jadwal!', { timeout: 2000 })
 		deleteDialog.value = false

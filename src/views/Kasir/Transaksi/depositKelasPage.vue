@@ -52,7 +52,7 @@ const errors = reactive<Record<string, string[]>>({})
 
 onMounted(async () => {
 	try {
-		const [r1, r2] = await Promise.all([api.get('https://gymflow-api-production.up.railway.app/api/member'), api.get('https://gymflow-api-production.up.railway.app/api/pegawai')])
+		const [r1, r2] = await Promise.all([api.get('/member'), api.get('/pegawai')])
 		members.value = r1.data.data
 		pegawais.value = r2.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
@@ -62,7 +62,7 @@ async function store() {
 	loading.value = true
 	Object.keys(errors).forEach(k => delete errors[k])
 	try {
-		await api.post('https://gymflow-api-production.up.railway.app/api/depositReguler', form)
+		await api.post('/depositReguler', form)
 		toast.success('Berhasil Deposit Reguler!', { timeout: 2000 })
 		form.id_member = ''
 		form.id_pegawai = ''

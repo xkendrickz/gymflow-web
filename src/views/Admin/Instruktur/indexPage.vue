@@ -99,7 +99,7 @@ const filtered = computed(() =>
 
 onMounted(async () => {
 	try {
-		const res = await api.get('https://gymflow-api-production.up.railway.app/api/instruktur')
+		const res = await api.get('/instruktur')
 		items.value = res.data.data
 	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
 	finally { loading.value = false }
@@ -111,7 +111,7 @@ async function deleteInstruktur() {
 	if (!toDelete.value) return
 	deleteLoading.value = true
 	try {
-		await api.delete(`https://gymflow-api-production.up.railway.app/api/instruktur/${toDelete.value.id_instruktur}`)
+		await api.delete(`/instruktur/${toDelete.value.id_instruktur}`)
 		items.value = items.value.filter(i => i.id_instruktur !== toDelete.value.id_instruktur)
 		toast.error('Berhasil Hapus Instruktur!', { timeout: 2000 })
 		deleteDialog.value = false

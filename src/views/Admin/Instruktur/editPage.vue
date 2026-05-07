@@ -67,7 +67,7 @@ const errors = reactive<Record<string, string[]>>({})
 
 onMounted(async () => {
     try {
-        const res = await api.get(`https://gymflow-api-production.up.railway.app/api/instruktur/${id}`)
+        const res = await api.get(`/instruktur/${id}`)
         const d = res.data.data
         form.nama_instruktur = d.nama_instruktur
         form.tanggal_lahir = d.tanggal_lahir
@@ -80,7 +80,7 @@ async function update() {
     loading.value = true
     Object.keys(errors).forEach(k => delete errors[k])
     try {
-        await api.put(`https://gymflow-api-production.up.railway.app/api/instruktur/${id}`, form)
+        await api.put(`/instruktur/${id}`, form)
         toast.success('Berhasil Edit Instruktur!', { timeout: 2000 })
         router.push({ name: 'admin.instruktur.index' })
     } catch (e: any) {
