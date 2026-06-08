@@ -47,6 +47,18 @@
 					</v-btn>
 				</form>
 
+				<!-- Demo credentials -->
+				<div class="demo-hint">
+					<p class="demo-title">Demo Credentials</p>
+					<div class="demo-row">
+						<span class="demo-role">Admin</span>
+						<code class="demo-cred">admin / admin123</code>
+					</div>
+					<div class="demo-row">
+						<span class="demo-role">Kasir</span>
+						<code class="demo-cred">kasir / kasir123</code>
+					</div>
+				</div>
 			</div>
 		</div>
 
