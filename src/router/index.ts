@@ -4,7 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
-    role?: 'admin' | 'kasir' | 'mo' | 'member'
+    role?: 'admin' | 'kasir' | 'member' // remove 'mo'
   }
 }
 
@@ -15,13 +15,27 @@ const routes = [
     component: () => import('@/components/LoginPage.vue'),
   },
 
-  // Admin
   {
     path: '/admin',
     name: 'admin.beranda',
     component: () => import('@/components/AdminDashboard.vue'),
     meta: { requiresAuth: true, role: 'admin' as const },
     children: [
+      {
+        path: 'pegawai',
+        name: 'admin.pegawai.index',
+        component: () => import('@/views/Admin/Pegawai/indexPage.vue'),
+      },
+      {
+        path: 'pegawai/create',
+        name: 'admin.pegawai.create',
+        component: () => import('@/views/Admin/Pegawai/createPage.vue'),
+      },
+      {
+        path: 'pegawai/edit/:id',
+        name: 'admin.pegawai.edit',
+        component: () => import('@/views/Admin/Pegawai/editPage.vue'),
+      },
       {
         path: 'instruktur',
         name: 'admin.instruktur.index',
@@ -37,10 +51,75 @@ const routes = [
         name: 'admin.instruktur.edit',
         component: () => import('@/views/Admin/Instruktur/editPage.vue'),
       },
+      {
+        path: 'kelas',
+        name: 'admin.kelas.index',
+        component: () => import('@/views/Admin/Kelas/indexPage.vue'),
+      },
+      {
+        path: 'kelas/create',
+        name: 'admin.kelas.create',
+        component: () => import('@/views/Admin/Kelas/createPage.vue'),
+      },
+      {
+        path: 'kelas/edit/:id',
+        name: 'admin.kelas.edit',
+        component: () => import('@/views/Admin/Kelas/editPage.vue'),
+      },
+      {
+        path: 'jadwalUmum',
+        name: 'admin.jadwalUmum.index',
+        component: () => import('@/views/manajerOperasional/JadwalUmum/indexPage.vue'),
+      },
+      {
+        path: 'jadwalUmum/create',
+        name: 'admin.jadwalUmum.create',
+        component: () => import('@/views/manajerOperasional/JadwalUmum/createPage.vue'),
+      },
+      {
+        path: 'jadwalUmum/edit/:id',
+        name: 'admin.jadwalUmum.edit',
+        component: () => import('@/views/manajerOperasional/JadwalUmum/editPage.vue'),
+      },
+      {
+        path: 'jadwalHarian',
+        name: 'admin.jadwalHarian.index',
+        component: () => import('@/views/manajerOperasional/JadwalHarian/indexPage.vue'),
+      },
+      {
+        path: 'jadwalHarian/edit/:id',
+        name: 'admin.jadwalHarian.edit',
+        component: () => import('@/views/manajerOperasional/JadwalHarian/editPage.vue'),
+      },
+      {
+        path: 'izin',
+        name: 'admin.izin.index',
+        component: () => import('@/views/manajerOperasional/Izin/indexPage.vue'),
+      },
+      {
+        path: 'laporan/pendapatan',
+        name: 'admin.laporan.pendapatan',
+        component: () => import('@/views/manajerOperasional/Laporan/laporanPendapatanPage.vue'),
+      },
+      {
+        path: 'laporan/aktivitasKelas',
+        name: 'admin.laporan.aktivitasKelas',
+        component: () => import('@/views/manajerOperasional/Laporan/laporanAktivitasKelasPage.vue'),
+      },
+      {
+        path: 'laporan/aktivitasGym',
+        name: 'admin.laporan.aktivitasGym',
+        component: () => import('@/views/manajerOperasional/Laporan/laporanAktivitasGymPage.vue'),
+      },
+      {
+        path: 'laporan/kinerja',
+        name: 'admin.laporan.kinerja',
+        component: () =>
+          import('@/views/manajerOperasional/Laporan/laporanKinerjaInstrukturPage.vue'),
+      },
     ],
   },
 
-  // Kasir
   {
     path: '/kasir',
     name: 'kasir.beranda',
@@ -95,67 +174,6 @@ const routes = [
     ],
   },
 
-  // MO
-  {
-    path: '/mo',
-    name: 'mo.beranda',
-    component: () => import('@/components/MODashboard.vue'),
-    meta: { requiresAuth: true, role: 'mo' as const },
-    children: [
-      {
-        path: 'jadwalUmum',
-        name: 'mo.jadwalUmum.index',
-        component: () => import('@/views/manajerOperasional/JadwalUmum/indexPage.vue'),
-      },
-      {
-        path: 'jadwalUmum/create',
-        name: 'mo.jadwalUmum.create',
-        component: () => import('@/views/manajerOperasional/JadwalUmum/createPage.vue'),
-      },
-      {
-        path: 'jadwalUmum/edit/:id',
-        name: 'mo.jadwalUmum.edit',
-        component: () => import('@/views/manajerOperasional/JadwalUmum/editPage.vue'),
-      },
-      {
-        path: 'jadwalHarian',
-        name: 'mo.jadwalHarian.index',
-        component: () => import('@/views/manajerOperasional/JadwalHarian/indexPage.vue'),
-      },
-      {
-        path: 'jadwalHarian/edit/:id',
-        name: 'mo.jadwalHarian.edit',
-        component: () => import('@/views/manajerOperasional/JadwalHarian/editPage.vue'),
-      },
-      {
-        path: 'izin',
-        name: 'mo.izin.index',
-        component: () => import('@/views/manajerOperasional/Izin/indexPage.vue'),
-      },
-      {
-        path: 'laporan/pendapatan',
-        name: 'mo.laporan.pendapatan',
-        component: () => import('@/views/manajerOperasional/Laporan/laporanPendapatanPage.vue'),
-      },
-      {
-        path: 'laporan/aktivitasKelas',
-        name: 'mo.laporan.aktivitasKelas',
-        component: () => import('@/views/manajerOperasional/Laporan/laporanAktivitasKelasPage.vue'),
-      },
-      {
-        path: 'laporan/aktivitasGym',
-        name: 'mo.laporan.aktivitasGym',
-        component: () => import('@/views/manajerOperasional/Laporan/laporanAktivitasGymPage.vue'),
-      },
-      {
-        path: 'laporan/kinerja',
-        name: 'mo.laporan.kinerja',
-        component: () =>
-          import('@/views/manajerOperasional/Laporan/laporanKinerjaInstrukturPage.vue'),
-      },
-    ],
-  },
-
   // 404
   {
     path: '/:pathMatch(.*)*',
@@ -169,14 +187,13 @@ const router = createRouter({
   routes,
 })
 
-// Navigation guard
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
 
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
     next({ name: 'login' })
   } else if (to.meta.role && auth.role !== to.meta.role) {
-    next({ name: 'login' }) // or redirect to their correct dashboard
+    next({ name: 'login' })
   } else {
     next()
   }

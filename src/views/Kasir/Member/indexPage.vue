@@ -41,30 +41,30 @@
 						<tr v-if="filtered.length === 0">
 							<td colspan="8" class="empty-row">Tidak ada data member.</td>
 						</tr>
-						<tr v-for="m in filtered" :key="m.id_member">
-							<td><span class="member-id">{{ m.member_id }}</span></td>
-							<td class="font-weight-medium">{{ m.nama_member }}</td>
+						<tr v-for="item in filtered" :key="item.id_member">
+							<td><span class="member-id">{{ item.member_id }}</span></td>
+							<td class="font-weight-medium">{{ item.nama_member }}</td>
 							<td>
 								<span
-									:class="['status-badge', m.status === 'aktif' ? 'status-active' : 'status-inactive']">
-									{{ m.status }}
+									:class="['status-badge', item.status === 'aktif' ? 'status-active' : 'status-inactive']">
+									{{ item.status }}
 								</span>
 							</td>
-							<td>{{ m.telepon ?? '—' }}</td>
-							<td>{{ m.email ?? '—' }}</td>
-							<td>{{ m.tanggal_lahir ?? '—' }}</td>
-							<td>{{ m.tanggal_daftar ?? '—' }}</td>
+							<td>{{ item.telepon ?? '—' }}</td>
+							<td>{{ item.email ?? '—' }}</td>
+							<td>{{ item.tanggal_lahir ?? '—' }}</td>
+							<td>{{ item.tanggal_daftar ?? '—' }}</td>
 							<td>
 								<div class="action-btns">
-									<v-btn :to="{ name: 'kasir.member.edit', params: { id: m.id_member } }" icon
+									<v-btn :to="{ name: 'kasir.member.edit', params: { id: item.id_member } }" icon
 										variant="text" color="blue" size="small">
 										<v-icon size="18">mdi-pencil</v-icon>
 									</v-btn>
-									<v-btn icon variant="text" color="red" size="small" @click="confirmDelete(m)">
+									<v-btn icon variant="text" color="red" size="small" @click="confirmDelete(item)">
 										<v-icon size="18">mdi-trash-can-outline</v-icon>
 									</v-btn>
 									<v-btn icon variant="text" color="orange" size="small"
-										@click="printCard(m.id_member)">
+										@click="printCard(item.id_member)">
 										<v-icon size="18">mdi-card-account-details</v-icon>
 									</v-btn>
 								</div>
@@ -98,66 +98,26 @@
 				<v-spacer />
 				<v-btn variant="outlined" color="grey" rounded="lg" @click="deleteDialog = false">Batal</v-btn>
 				<v-btn color="red" variant="flat" rounded="lg" :loading="deleteLoading"
-					@click="deleteMember">Hapus</v-btn>
+					@click="deleteItem('id_member')">Hapus</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
+import { useTable } from '@/composables/useTable'
 import api from '@/lib/axios'
 
 const toast = useToast()
-const members = ref<any[]>([])
-const search = ref('')
-const loading = ref(true)
-const deleteDialog = ref(false)
-const deleteLoading = ref(false)
-const toDelete = ref<any>(null)
 
-const filtered = computed(() =>
-	members.value.filter(m =>
-		m.nama_member?.toLowerCase().includes(search.value.toLowerCase())
-	)
-)
-
-onMounted(async () => {
-	try {
-		const res = await api.get('/member')
-		members.value = res.data.data
-	} catch {
-		toast.error('Gagal memuat data member.', { timeout: 2000 })
-	} finally {
-		loading.value = false
-	}
-})
-
-function confirmDelete(member: any) {
-	toDelete.value = member
-	deleteDialog.value = true
-}
-
-async function deleteMember() {
-	if (!toDelete.value) return
-	deleteLoading.value = true
-	try {
-		await api.delete(`/member/${toDelete.value.id_member}`)
-		members.value = members.value.filter(m => m.id_member !== toDelete.value.id_member)
-		toast.error('Berhasil Hapus Member!', { timeout: 2000 })
-		deleteDialog.value = false
-	} catch {
-		toast.error('Gagal menghapus member.', { timeout: 2000 })
-	} finally {
-		deleteLoading.value = false
-	}
-}
+const { search, loading, filtered, deleteDialog, deleteLoading, toDelete, confirmDelete, deleteItem }
+	= useTable<any>('/member', (m, s) => m.nama_member?.toLowerCase().includes(s.toLowerCase()),)
 
 async function printCard(id: number) {
 	try {
 		const res = await api.get(`/member/${id}`)
-		const m = res.data.data
+		const item = res.data.data
 		const popup = window.open('', '_blank')
 		if (!popup) return
 		popup.document.write(`
@@ -177,10 +137,10 @@ async function printCard(id: number) {
         <p class="address">Jl. Qlipoth Tree No. 5, Yogyakarta</p>
         <span class="badge">MEMBER CARD</span>
         <hr class="divider">
-        <p class="label">Member ID</p><p class="value">${m.member_id}</p>
-        <p class="label">Nama</p><p class="value">${m.nama_member}</p>
-        <p class="label">Alamat</p><p class="value">${m.alamat ?? '—'}</p>
-        <p class="label">Telepon</p><p class="value">${m.telepon ?? '—'}</p>
+        <p class="label">Member ID</p><p class="value">${item.member_id}</p>
+        <p class="label">Nama</p><p class="value">${item.nama_member}</p>
+        <p class="label">Alamat</p><p class="value">${item.alamat ?? '—'}</p>
+        <p class="label">Telepon</p><p class="value">${item.telepon ?? '—'}</p>
       </div>
       </body></html>
     `)
@@ -193,134 +153,3 @@ async function printCard(id: number) {
 	}
 }
 </script>
-
-<style scoped>
-.page-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 24px;
-}
-
-.page-title {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #f1f5f9;
-	margin: 0 0 4px;
-}
-
-.page-subtitle {
-	font-size: 0.875rem;
-	color: #6b7280;
-	margin: 0;
-}
-
-.new-btn {
-	background: linear-gradient(135deg, #f97316, #ea580c) !important;
-	color: white !important;
-}
-
-.table-card {
-	background: #111111 !important;
-	border: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-.table-wrapper {
-	overflow-x: auto;
-}
-
-.data-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 0.875rem;
-}
-
-.data-table th {
-	text-align: left;
-	padding: 10px 14px;
-	font-size: 0.7rem;
-	font-weight: 600;
-	color: #6b7280;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-	white-space: nowrap;
-}
-
-.data-table td {
-	padding: 12px 14px;
-	color: #d1d5db;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-	white-space: nowrap;
-}
-
-.data-table tr:hover td {
-	background: rgba(255, 255, 255, 0.02);
-}
-
-.data-table tr:last-child td {
-	border-bottom: none;
-}
-
-.member-id {
-	font-family: monospace;
-	font-size: 0.8rem;
-	color: #f97316;
-	background: rgba(249, 115, 22, 0.1);
-	padding: 2px 8px;
-	border-radius: 4px;
-}
-
-.status-badge {
-	font-size: 0.7rem;
-	font-weight: 600;
-	padding: 3px 10px;
-	border-radius: 99px;
-	text-transform: capitalize;
-}
-
-.status-active {
-	background: rgba(34, 197, 94, 0.1);
-	color: #22c55e;
-}
-
-.status-inactive {
-	background: rgba(239, 68, 68, 0.1);
-	color: #ef4444;
-}
-
-.action-btns {
-	display: flex;
-	gap: 2px;
-}
-
-.empty-row {
-	text-align: center;
-	color: #6b7280;
-	padding: 32px !important;
-}
-
-.delete-icon-wrap {
-	width: 44px;
-	height: 44px;
-	border-radius: 12px;
-	background: rgba(239, 68, 68, 0.1);
-	display: grid;
-	place-items: center;
-	flex-shrink: 0;
-}
-
-.dialog-title {
-	font-size: 1rem;
-	font-weight: 700;
-	color: #f1f5f9;
-	margin: 0;
-}
-
-.dialog-subtitle {
-	font-size: 0.8rem;
-	color: #6b7280;
-	margin: 0;
-}
-</style>

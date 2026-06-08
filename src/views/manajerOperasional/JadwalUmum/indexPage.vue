@@ -48,10 +48,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, defineComponent, h } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useRouter } from 'vue-router'
 import api from '@/lib/axios'
 
-const router = useRouter()
 const toast = useToast()
 const jadwal = ref<any[]>([])
 const loading = ref(true)
@@ -59,7 +57,6 @@ const deleteDialog = ref(false)
 const deleteLoading = ref(false)
 const toDeleteId = ref<number | null>(null)
 
-// Group by hari-kelas
 function groupBy(data: any[]) {
 	const groups: Record<string, any[]> = {}
 	data.forEach(item => {
@@ -70,16 +67,11 @@ function groupBy(data: any[]) {
 	return Object.values(groups)
 }
 
-const morningGroups = computed(() =>
-	groupBy(jadwal.value.filter(i => i.jam >= '00:00' && i.jam < '12:00'))
-)
-const eveningGroups = computed(() =>
-	groupBy(jadwal.value.filter(i => i.jam >= '12:00' && i.jam <= '23:59'))
-)
+const morningGroups = computed(() => groupBy(jadwal.value.filter(i => i.jam < '12:00')))
+const eveningGroups = computed(() => groupBy(jadwal.value.filter(i => i.jam >= '12:00')))
 
-function formatDay(date: string) {
-	return new Date(date).toLocaleDateString('id-ID', { weekday: 'long' }).toUpperCase()
-}
+const formatDay = (date: string) =>
+	new Date(date).toLocaleDateString('id-ID', { weekday: 'long' }).toUpperCase()
 
 onMounted(async () => {
 	try {
@@ -103,7 +95,6 @@ async function deleteJadwal() {
 	finally { deleteLoading.value = false }
 }
 
-// Inline component for table to avoid duplication
 const ScheduleTable = defineComponent({
 	props: { groups: Array },
 	emits: ['delete'],
@@ -139,88 +130,3 @@ const ScheduleTable = defineComponent({
 	}
 })
 </script>
-
-<style scoped>
-.page-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 24px;
-}
-
-.page-title {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #f1f5f9;
-	margin: 0 0 4px;
-}
-
-.page-subtitle {
-	font-size: 0.875rem;
-	color: #6b7280;
-	margin: 0;
-}
-
-.new-btn {
-	background: linear-gradient(135deg, #f97316, #ea580c) !important;
-	color: white !important;
-}
-
-.table-card {
-	background: #111111 !important;
-	border: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-.section-label {
-	font-size: 0.7rem;
-	font-weight: 600;
-	color: #6b7280;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	margin-bottom: 16px;
-}
-
-.table-wrapper {
-	overflow-x: auto;
-}
-
-.data-table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 0.875rem;
-}
-
-.data-table th {
-	text-align: left;
-	padding: 10px 14px;
-	font-size: 0.7rem;
-	font-weight: 600;
-	color: #6b7280;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-	white-space: nowrap;
-}
-
-.data-table td {
-	padding: 12px 14px;
-	color: #d1d5db;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.data-table tr:last-child td {
-	border-bottom: none;
-}
-
-.action-btns {
-	display: flex;
-	gap: 2px;
-}
-
-.empty-row {
-	text-align: center;
-	color: #6b7280;
-	padding: 20px !important;
-}
-</style>

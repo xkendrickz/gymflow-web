@@ -111,8 +111,12 @@ async function login() {
 				roleFromId(data.id_role)
 			)
 			toast.success('Berhasil Login!', { timeout: 2000 })
-			const roleRoutes: Record<number, string> = { 1: 'admin', 2: 'mo', 3: 'kasir' }
-			router.push(roleRoutes[data.id_role] ?? '/')
+			const roleRoutes: Record<number, string> = {
+				1: 'admin.beranda',
+				2: 'admin.beranda',
+				3: 'kasir.beranda'
+			}
+			router.push({ name: roleRoutes[data.id_role] ?? 'login' })
 		}
 	} catch (error: any) {
 		if (error.response?.data?.errors) {
@@ -125,9 +129,9 @@ async function login() {
 	}
 }
 
-function roleFromId(id: number): 'admin' | 'kasir' | 'mo' | 'member' {
-	const map: Record<number, 'admin' | 'kasir' | 'mo' | 'member'> = {
-		1: 'admin', 2: 'mo', 3: 'kasir',
+function roleFromId(id: number): 'admin' | 'kasir' | 'member' {
+	const map: Record<number, 'admin' | 'kasir' | 'member'> = {
+		1: 'admin', 2: 'admin', 3: 'kasir',
 	}
 	return map[id] ?? 'member'
 }

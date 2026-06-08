@@ -87,17 +87,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from 'vue-toastification'
-import api from '@/lib/axios'
+import { useForm } from '@/composables/useForm'
 
 const router = useRouter()
-const toast = useToast()
-const loading = ref(false)
 const showPassword = ref(false)
 
-const form = reactive({
+const { form, errors, loading, submit } = useForm({
     nama_member: '',
     email: '',
     telepon: '',
@@ -109,81 +106,6 @@ const form = reactive({
     password: '',
 })
 
-const errors = reactive<Record<string, string[]>>({})
-
-async function store() {
-    loading.value = true
-    Object.keys(errors).forEach(k => delete errors[k])
-
-    try {
-        await api.post('/member', form)
-        toast.success('Berhasil Register Member!', { timeout: 2000 })
-        router.push({ name: 'kasir.member.index' })
-    } catch (error: any) {
-        if (error.response?.data?.errors) {
-            Object.assign(errors, error.response.data.errors)
-        } else {
-            toast.error('Gagal menyimpan data.', { timeout: 2000 })
-        }
-    } finally {
-        loading.value = false
-    }
-}
+const store = () =>
+    submit('post', '/member', 'Berhasil Register Member!', 'kasir.member.index')
 </script>
-
-<style scoped>
-.page-header {
-    margin-bottom: 24px;
-}
-
-.page-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #f1f5f9;
-    margin: 0 0 4px;
-}
-
-.page-subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-    margin: 0;
-}
-
-.form-card {
-    background: #111111 !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px 24px;
-}
-
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.field-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 4px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-.save-btn {
-    background: linear-gradient(135deg, #f97316, #ea580c) !important;
-    color: white !important;
-}
-</style>

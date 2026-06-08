@@ -33,108 +33,19 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
-import { useToast } from 'vue-toastification'
-import api from '@/lib/axios'
+import { useLaporan } from '@/composables/useLaporan'
 
-const toast = useToast()
-const loading = ref(false)
-const dropdown = ref<any>({ months: [], years: [] })
-const form = reactive({ bulan: '', tahun: '' })
-
-onMounted(async () => {
-	try {
-		const res = await api.get('/dropdownAktivitasGym')
-		dropdown.value = res.data.data
-	} catch { toast.error('Gagal memuat data.', { timeout: 2000 }) }
-})
-
-async function cetak() {
-	if (!form.bulan || !form.tahun) { toast.error('Pilih bulan dan tahun.', { timeout: 2000 }); return }
-	loading.value = true
-	try {
-		const res = await api.get(`/laporanAktivitasGym/${form.bulan}/${form.tahun}`)
-		const { data, total, bulan, tahun, tanggal } = res.data
-		const popup = window.open('', '_blank')
-		if (!popup) return
-		popup.document.write(`
-      <html><head><title>Laporan Aktivitas Gym</title>
-      <style>
-        body { font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px; background: #f5f5f5; }
-        .card { width: 650px; background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .gym-name { font-size: 20px; font-weight: 800; color: #f97316; margin: 0 0 2px; }
-        .address { font-size: 11px; color: #9ca3af; margin: 0 0 16px; }
-        h3 { font-size: 14px; text-decoration: underline; margin: 16px 0 8px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #e5e7eb; padding: 8px 12px; font-size: 13px; }
-        th { background: #f9fafb; font-weight: 600; }
-        .total-row td { font-weight: 700; background: #fff7ed; }
-      </style></head><body>
-      <div class="card">
-        <p class="gym-name">GymFlow</p>
-        <p class="address">Jl. Qlipoth Tree No. 5, Yogyakarta</p>
-        <h3>LAPORAN AKTIVITAS GYM — ${bulan} ${tahun}</h3>
-        <p style="font-size:12px;color:#6b7280;">Tanggal cetak: ${tanggal}</p>
-        <table>
-          <tr><th>Tanggal</th><th>Jumlah Member</th></tr>
-          ${data.map((item: any) => `<tr><td>${item.tanggal}</td><td>${item.jumlah_member}</td></tr>`).join('')}
-          <tr class="total-row"><td>TOTAL</td><td>${total}</td></tr>
-        </table>
-      </div>
-      </body></html>
-    `)
-		popup.document.close(); popup.focus(); popup.print(); popup.close()
-	} catch { toast.error('Gagal mengambil data laporan.', { timeout: 2000 }) }
-	finally { loading.value = false }
-}
+const { form, dropdown, loading, cetak } = useLaporan(
+	'dropdownAktivitasGym',
+	(f) => `/laporanAktivitasGym/${f.bulan}/${f.tahun}`,
+	({ data, total, bulan, tahun, tanggal }, { printLaporan }) => {
+		printLaporan(
+			`LAPORAN AKTIVITAS GYM — ${bulan} ${tahun}`,
+			`Tanggal cetak: ${tanggal}`,
+			['Tanggal', 'Jumlah Member'],
+			data.map((i: any) => [i.tanggal, i.jumlah_member]),
+			['TOTAL', String(total)]
+		)
+	}
+)
 </script>
-
-<style scoped>
-.page-header {
-	margin-bottom: 24px;
-}
-
-.page-title {
-	font-family: 'Montserrat', sans-serif;
-	font-size: 1.5rem;
-	font-weight: 800;
-	color: #f1f5f9;
-	margin: 0 0 4px;
-}
-
-.page-subtitle {
-	font-size: 0.875rem;
-	color: #6b7280;
-	margin: 0;
-}
-
-.form-card {
-	background: #111111 !important;
-	border: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-.form-grid {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 4px 24px;
-}
-
-.field-label {
-	font-size: 0.75rem;
-	font-weight: 600;
-	color: #9ca3af;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	margin-bottom: 4px;
-}
-
-.form-actions {
-	display: flex;
-	justify-content: flex-end;
-}
-
-.cetak-btn {
-	background: linear-gradient(135deg, #f97316, #ea580c) !important;
-	color: white !important;
-}
-</style>
